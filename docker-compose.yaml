@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  demo:
+    container_name: server
+    build:
+      context: .
+      target: dev
+    volumes:
+      - "./:/demo"
+    environment:
+      DEMO_LOGGER: prod
+    env_file:
+      - .env
+    ports:
+      - "2345:2345"
+      - "8080:8080"
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9999:8080"
+
+networks:
+  default:
+    name: demo

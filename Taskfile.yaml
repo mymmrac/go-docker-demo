@@ -1,0 +1,67 @@
+version: 3
+
+# Disable extensive task logs
+#silent: true
+
+tasks:
+  default:
+    desc: "Print this message"
+    silent: true
+    cmds:
+      - task --list-all
+
+  up:
+    desc: "Run services"
+    cmds:
+      - docker compose up -d
+      - task: api
+
+  up:build:
+    desc: "Build & run services"
+    cmds:
+      - docker compose up -d --build
+      - task: api
+
+  down:
+    desc: "Stop services"
+    cmds:
+      - docker compose down
+
+  api:
+    desc: "Print API endpoints"
+    silent: true
+    cmds:
+      - echo
+      - echo "Logs    http://localhost:9999"
+      - echo "Service http://localhost:8080"
+
+  watch:
+    desc: "Watch docker containers"
+    cmds:
+      - watch docker container ls --all --filter='network=demo'
+
+  pre-commit:
+    desc: "Pre commit actions"
+    cmds:
+      - go mod tidy
+      - task: test
+
+  test:
+    desc: "Run tests"
+    cmds:
+      - go test ./...
+
+  test:docker:
+    desc: "Run tests in Docker"
+    cmds:
+      - docker image build --target test .
+
+  release:build:
+    desc: "Build release image"
+    cmds:
+      - docker image build --target release --tag mymmrac/go-docker-demo:latest .
+
+  release:run:
+    desc: "Run release image"
+    cmds:
+      - docker container run --rm -p 8080:8080 --env-file .env --env DEMO_LOGGER=prod mymmrac/go-docker-demo:latest
