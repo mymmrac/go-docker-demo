@@ -16,6 +16,12 @@ tasks:
       - docker compose up -d
       - task: api
 
+  restart:
+    desc: "Restart services"
+    cmds:
+      - task: down
+      - task: up
+
   up:build:
     desc: "Build & run services"
     cmds:
@@ -39,6 +45,11 @@ tasks:
     desc: "Watch docker containers"
     cmds:
       - watch docker container ls --all --filter='network=demo'
+
+  logs:
+    desc: "Server logs"
+    cmds:
+      - docker container logs server --follow
 
   pre-commit:
     desc: "Pre commit actions"
@@ -65,3 +76,9 @@ tasks:
     desc: "Run release image"
     cmds:
       - docker container run --rm -p 8080:8080 --env-file .env --env DEMO_LOGGER=prod mymmrac/go-docker-demo:latest
+
+  install:tools:
+    desc: "Install dev tools"
+    cmds:
+      - go install github.com/go-delve/delve/cmd/dlv@latest
+      - go install github.com/cosmtrek/air@latest

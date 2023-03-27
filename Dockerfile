@@ -12,10 +12,9 @@ COPY . .
 FROM source AS dev
 
 RUN go install github.com/go-delve/delve/cmd/dlv@latest && \
-    go install github.com/cespare/reflex@latest
+    go install github.com/cosmtrek/air@latest
 
-CMD reflex --decoration="none" -R "bin/" -s -- sh -c \
-    "dlv debug --output ./bin/demo --headless --continue --accept-multiclient --listen :2345 --api-version=2 --log ./"
+ENTRYPOINT air
 
 FROM source AS test
 
